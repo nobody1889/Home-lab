@@ -12,5 +12,4 @@ apt-get install -y \
     htop \
     net-tools \
     jq \
-    bash-completion \
-    build-essential
+    ca-certificates
