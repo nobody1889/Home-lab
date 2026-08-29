@@ -1,26 +1,54 @@
 resource "incus_instance" "master-node" {
-    name = "k3s-master"
-    image = "images:base-as-debian"
-    type = "virtual-machine"
+  count = var.k3s_master_count
+  name  = "k3s-master"
+  image = var.golden_image
+  type  = "virtual-machine"
 
-    config = {
-        "boot.autostart" = true
-        "limits.cpu"     = var.k3s_master
-        "limits.memory"  = var.k3s_master_memory
-        "rootfs.size"    = var.k3s_master_storage
+  config = {
+    "boot.autostart" = true
+    "limits.cpu"     = var.k3s_master_cpu
+    "limits.memory"  = var.k3s_master_memory
+  }
+
+  device {
+    name = "root"
+    type = "disk"
+    properties = {
+      path = "/"
+      pool = "incus"
+      size = var.k3s_master_storage
     }
+  }
+
+  wait_for {
+    type = "agent"
+  }
 }
 
 resource "incus_instance" "worker-node" {
-    name = "k3s-worker"
-    image = "images:base-as-debian"
-    type = "virtual-machine"
+  count = var.k3s_worker_count
+ 
+  name  = "k3s-worker-${count.index}"
+  image = var.golden_image
+  type  = "virtual-machine"
 
-    config = {
-        "boot.autostart" = true
-        "limits.cpu"     = var.k3s_worker
-        "limits.memory"  = var.k3s_worker_memory
-        "rootfs.size"    = var.k3s_worker_storage
+  config = {
+    "boot.autostart" = true
+    "limits.cpu"     = var.k3s_worker_cpu
+    "limits.memory"  = var.k3s_worker_memory
+  }
+
+  device {
+    name = "root"
+    type = "disk"
+    properties = {
+      path = "/"
+      pool = "incus"
+      size = var.k3s_worker_storage
     }
-}
+  }
 
+  wait_for {
+    type = "agent"
+  }
+}
