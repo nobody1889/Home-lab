@@ -1,2 +1,8 @@
 *.terraformrc
 */.terraformrc
+
+*LICENSE.md
+*CHANGELOG.md
+
+.terraform.lock.hcl
+*terraform-provider-incus*
