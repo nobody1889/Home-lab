@@ -1,7 +1,16 @@
 #!/bin/bash
 set -e
 
-apt update
-apt upgrade -y
+apt-get update
+apt-get upgrade -y
 
-apt install -y git curl wget tar btop htop vim jq ca-certification 
+apt-get install -y \
+    curl \
+    wget \
+    git \
+    vim \
+    htop \
+    net-tools \
+    jq \
+    bash-completion \
+    build-essential
