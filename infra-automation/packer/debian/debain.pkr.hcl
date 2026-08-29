@@ -26,21 +26,21 @@ build {
     
     # update/upgrade and install base packages
     provisioner "shell" {
-        script = "scripts/base.sh"
+        script = "${path.root}/scripts/base.sh"
     }
 
 
     provisioner "shell" {
-        script = "scripts/docker_setup.sh"
+        script = "${path.root}/scripts/docker_setup.sh"
     }
 
     provisioner "shell" {
-        script = "scripts/k3s_setup.sh"
+        script = "${path.root}/scripts/k3s_setup.sh"
     }
 
     # cleanup
     provisioner "shell" {
-        script = "scripts/cleanup.sh"
+        script = "${path.root}/scripts/cleanup.sh"
     }
 
 }
