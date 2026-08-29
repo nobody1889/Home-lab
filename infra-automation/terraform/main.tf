@@ -1,6 +1,18 @@
+resource "incus_network" "k3s_net" {
+  name = "k3s-net"
+
+  config = {
+    "ipv4.address" = "10.100.0.1/24"
+    "ipv4.nat"     = "true"
+    "ipv4.dhcp.ranges" = "10.100.0.50-10.100.0.99"
+    "ipv6.address" = "none"
+  }
+}
+
 resource "incus_instance" "master-node" {
   count = var.k3s_master_count
-  name  = "k3s-master"
+
+  name  = "k3s-master-${count.index}"
   image = var.golden_image
   type  = "virtual-machine"
 
@@ -8,6 +20,15 @@ resource "incus_instance" "master-node" {
     "boot.autostart" = true
     "limits.cpu"     = var.k3s_master_cpu
     "limits.memory"  = var.k3s_master_memory
+  }
+
+  device {
+    name = "eth0"
+    type = "nic"
+    properties = {
+      network        = incus_network.k3s_net.name
+      "ipv4.address" = cidrhost("10.100.0.0/24", 20 + count.index)
+    }
   }
 
   device {
@@ -36,6 +57,16 @@ resource "incus_instance" "worker-node" {
     "boot.autostart" = true
     "limits.cpu"     = var.k3s_worker_cpu
     "limits.memory"  = var.k3s_worker_memory
+  }
+
+  device {
+    name = "eth0"
+    type = "nic"
+
+    properties = {
+      network        = incus_network.k3s_net.name
+      "ipv4.address" = cidrhost("10.100.0.0/24", 100 + count.index)
+    }
   }
 
   device {
