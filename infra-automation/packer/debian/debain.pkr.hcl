@@ -14,8 +14,8 @@ variable "incus_image_name" {
 }
 
 source "incus" "debian" {
-    image = "images:debian:13"
-    output_name = var.incus_image_name
+    image = "images:debian/13"
+    output_image = var.incus_image_name
 }
 
 build {
@@ -26,21 +26,21 @@ build {
     
     # update/upgrade and install base packages
     provisioner "shell" {
-        script = "${path.root}/scripts/base.sh"
+        script = "${path.cwd}/scripts/base_setup.sh"
     }
 
 
     provisioner "shell" {
-        script = "${path.root}/scripts/docker_setup.sh"
+        script = "${path.cwd}/scripts/docker_setup.sh"
     }
 
     provisioner "shell" {
-        script = "${path.root}/scripts/k3s_setup.sh"
+        script = "${path.cwd}/scripts/k3s_setup.sh"
     }
 
     # cleanup
     provisioner "shell" {
-        script = "${path.root}/scripts/cleanup.sh"
+        script = "${path.cwd}/scripts/cleanup.sh"
     }
 
 }
