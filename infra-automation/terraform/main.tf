@@ -4,7 +4,7 @@ resource "incus_network" "k3s_net" {
   config = {
     "ipv4.address" = "10.100.0.1/24"
     "ipv4.nat"     = "true"
-    "ipv4.dhcp.ranges" = "10.100.0.50-10.100.0.99"
+    "ipv4.dhcp"    = "true"
     "ipv6.address" = "none"
   }
 }
