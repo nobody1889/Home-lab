@@ -11,7 +11,7 @@ packer {
 
 variable "debian_version" {
   type    = string
-  default = "12"
+  default = "13.6.0"
 }
 
 variable "debian_codename" {
@@ -61,7 +61,7 @@ variable "disable_components" {
 }
 
 source "qemu" "debian" {
-  iso_url      = "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-12.11.0-amd64-netinst.iso"
+  iso_url      = "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-13.6.0-amd64-netinst.iso"
   iso_checksum = "file:https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/SHA256SUMS"
 
   output_directory = "output-${var.image_name}"
@@ -113,5 +113,26 @@ build {
     ]
 
     execute_command = "echo '${var.ssh_password}' | {{ .Vars }} sudo -S -E bash '{{ .Path }}'"
+  }
+
+  post-processor "shell-local" {
+    inline = [
+      "echo '=== Converting qcow2 to raw ==='",
+      "qemu-img convert -f qcow2 -O raw {{ .BuildOutput }} /tmp/debian-k3s-rootfs.img",
+
+      "echo '=== Creating metadata ==='",
+      "mkdir -p /tmp/incus-image",
+      "cat > /tmp/incus-image/metadata.yaml <<EOF\narchitecture: x86_64\ncreation_date: $(date +%s)\nproperties:\n  description: \"Debian 12 golden image with k3s (disabled)\"\n  os: Debian\n  release: bookworm\n  variant: cloud\n  serial: $(date +%Y%m%d_%H%M)\nEOF",
+
+      "echo '=== Importing into Incus ==='",
+      "incus image import /tmp/incus-image/metadata.yaml /tmp/debian-k3s-rootfs.img --alias debian-k3s-golden --reuse",
+
+      "echo '=== Cleaning temporary files ==='",
+      "rm -f /tmp/debian-k3s-rootfs.img",
+      "rm -rf /tmp/incus-image",
+
+      "echo '=== Done! Image debian-k3s-golden is ready ==='",
+      "incus image list | grep debian-k3s-golden"
+    ]
   }
 }
