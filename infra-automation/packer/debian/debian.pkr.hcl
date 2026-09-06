@@ -83,11 +83,11 @@ source "qemu" "debian" {
 
   boot_command = [
     "<esc><wait>",
-    "auto url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
-    "debian-installer/locale=en_US.UTF-8 ",
-    "keyboard-configuration/xkb-keymap=us ",
-    "netcfg/get_hostname=debian-k3s ",
-    "netcfg/get_domain=local ",
+    "auto url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg priority=critical<wait>",
+    " debian-installer/locale=en_US.UTF-8<wait>",
+    " keyboard-configuration/xkb-keymap=us<wait>",
+    " netcfg/get_hostname=debian-k3s<wait>",
+    " netcfg/get_domain=local<wait>",
     "<enter>"
   ]
 }
