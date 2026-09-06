@@ -106,10 +106,10 @@ build {
     ]
 
     scripts = [
-      "scripts/00-base.sh",
-      "scripts/10-security.sh",
-      "scripts/20-k3s.sh",
-      "scripts/99-cleanup.sh"
+      "scripts/base_setup.sh",
+      "scripts/docker_setup.sh",
+      "scripts/k3s_setup.sh",
+      "scripts/cleanup.sh"
     ]
 
     execute_command = "echo '${var.ssh_password}' | {{ .Vars }} sudo -S -E bash '{{ .Path }}'"
