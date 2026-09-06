@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+
+IMAGE_PATH="output/qcow2/debian-k3s-golden.qcow2"
+INCUS_ALIAS="debian-k3s-golden"
+INCUS_REMOTE=${1:-local}  # local or remote incus server
+
+# Import image
+incus image import "$IMAGE_PATH" --alias "$INCUS_ALIAS" -r "$INCUS_REMOTE"
+
+# Verify
+incus image list -r "$INCUS_REMOTE" | grep "$INCUS_ALIAS"
+
+# Optional: Launch test VM
+# incus launch "$INCUS_ALIAS" test-vm --vm -c limits.cpu=2 -c limits.memory=2GB
