@@ -116,25 +116,33 @@ build {
     execute_command = "echo '${var.ssh_password}' | {{ .Vars }} sudo -S -E bash '{{ .Path }}'"
   }
 
+  # ===== FOR INCUS & PROXMOX (QCOW2) =====
   post-processor "shell-local" {
-  inline = [
-    "echo '=== Converting qcow2 to raw ==='",
-    "qemu-img convert -f qcow2 -O raw output-${var.image_name}/${var.image_name} /tmp/debian-k3s-rootfs.img",
-
-    "echo '=== Creating metadata ==='",
-    "mkdir -p /tmp/incus-image",
-    "cat > /tmp/incus-image/metadata.yaml <<EOF\narchitecture: x86_64\ncreation_date: $(date +%s)\nproperties:\n  description: \"Debian 13 golden image with k3s (disabled)\"\n  os: Debian\n  release: ${var.debian_codename}\n  variant: cloud\n  serial: $(date +%Y%m%d_%H%M)\nEOF",
-
-    "echo '=== Importing into Incus ==='",
-    "incus image delete ${var.image_name} 2>/dev/null || true",
-    "incus image import /tmp/incus-image/metadata.yaml /tmp/debian-k3s-rootfs.img --alias ${var.image_name} --reuse",
-
-    "echo '=== Cleaning temporary files ==='",
-    "rm -f /tmp/debian-k3s-rootfs.img",
-    "rm -rf /tmp/incus-image",
-
-    "echo '=== Done! Image ${var.image_name} is ready ==='",
-    "incus image list | grep ${var.image_name}"
+    inline = [
+      "mkdir -p ${var.output_dir_qcow2}",
+      "cp output-qemu/${var.image_name} ${var.output_dir_qcow2}/${var.image_name}.qcow2",
+      "ls -lh ${var.output_dir_qcow2}/"
     ]
+    description = "Copy QCOW2 for Incus/Proxmox"
   }
+
+  # # ===== FOR ESXi (VMDK) =====
+  # post-processor "shell-local" {
+  #   inline = [
+  #     "mkdir -p ${var.output_dir_vmdk}",
+  #     "qemu-img convert -f qcow2 -O vmdk output-qemu/${var.image_name} ${var.output_dir_vmdk}/${var.image_name}.vmdk",
+  #     "ls -lh ${var.output_dir_vmdk}/"
+  #   ]
+  #   description = "Convert QCOW2 to VMDK for ESXi"
+  # }
+
+  # # ===== FOR RAW (Alternative, smaller for Incus) =====
+  # post-processor "shell-local" {
+  #   inline = [
+  #     "mkdir -p ${var.output_dir_raw}",
+  #     "qemu-img convert -f qcow2 -O raw output-qemu/${var.image_name} ${var.output_dir_raw}/${var.image_name}.raw",
+  #     "ls -lh ${var.output_dir_raw}/"
+  #   ]
+  #   description = "Convert to RAW format"
+  # }
 }
