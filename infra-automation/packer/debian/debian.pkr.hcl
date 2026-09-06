@@ -16,7 +16,7 @@ variable "debian_version" {
 
 variable "debian_codename" {
   type    = string
-  default = "bookworm"
+  default = "trixie"
 }
 
 variable "image_name" {
@@ -63,6 +63,7 @@ variable "disable_components" {
 source "qemu" "debian" {
   iso_url      = "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-13.6.0-amd64-netinst.iso"
   iso_checksum = "file:https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/SHA256SUMS"
+  vm_name = var.image_name
 
   output_directory = "output-${var.image_name}"
   disk_size        = var.disk_size
@@ -116,23 +117,24 @@ build {
   }
 
   post-processor "shell-local" {
-    inline = [
-      "echo '=== Converting qcow2 to raw ==='",
-      "qemu-img convert -f qcow2 -O raw {{ .BuildOutput }} /tmp/debian-k3s-rootfs.img",
+  inline = [
+    "echo '=== Converting qcow2 to raw ==='",
+    "qemu-img convert -f qcow2 -O raw output-${var.image_name}/${var.image_name} /tmp/debian-k3s-rootfs.img",
 
-      "echo '=== Creating metadata ==='",
-      "mkdir -p /tmp/incus-image",
-      "cat > /tmp/incus-image/metadata.yaml <<EOF\narchitecture: x86_64\ncreation_date: $(date +%s)\nproperties:\n  description: \"Debian 12 golden image with k3s (disabled)\"\n  os: Debian\n  release: bookworm\n  variant: cloud\n  serial: $(date +%Y%m%d_%H%M)\nEOF",
+    "echo '=== Creating metadata ==='",
+    "mkdir -p /tmp/incus-image",
+    "cat > /tmp/incus-image/metadata.yaml <<EOF\narchitecture: x86_64\ncreation_date: $(date +%s)\nproperties:\n  description: \"Debian 13 golden image with k3s (disabled)\"\n  os: Debian\n  release: ${var.debian_codename}\n  variant: cloud\n  serial: $(date +%Y%m%d_%H%M)\nEOF",
 
-      "echo '=== Importing into Incus ==='",
-      "incus image import /tmp/incus-image/metadata.yaml /tmp/debian-k3s-rootfs.img --alias debian-k3s-golden --reuse",
+    "echo '=== Importing into Incus ==='",
+    "incus image delete ${var.image_name} 2>/dev/null || true",
+    "incus image import /tmp/incus-image/metadata.yaml /tmp/debian-k3s-rootfs.img --alias ${var.image_name} --reuse",
 
-      "echo '=== Cleaning temporary files ==='",
-      "rm -f /tmp/debian-k3s-rootfs.img",
-      "rm -rf /tmp/incus-image",
+    "echo '=== Cleaning temporary files ==='",
+    "rm -f /tmp/debian-k3s-rootfs.img",
+    "rm -rf /tmp/incus-image",
 
-      "echo '=== Done! Image debian-k3s-golden is ready ==='",
-      "incus image list | grep debian-k3s-golden"
+    "echo '=== Done! Image ${var.image_name} is ready ==='",
+    "incus image list | grep ${var.image_name}"
     ]
   }
 }
