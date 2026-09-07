@@ -20,6 +20,7 @@ resource "incus_instance" "master-node" {
     "boot.autostart" = true
     "limits.cpu"     = var.k3s_master_cpu
     "limits.memory"  = var.k3s_master_memory
+    "cloud-init.user-data" = templatefile("${path.module}/cloud-init/master-node.yml", {})
   }
 
   device {
@@ -57,6 +58,7 @@ resource "incus_instance" "worker-node" {
     "boot.autostart" = true
     "limits.cpu"     = var.k3s_worker_cpu
     "limits.memory"  = var.k3s_worker_memory
+    "cloud-init.user-data" = templatefile("${path.module}/cloud-init/master-node.yml", {})
   }
 
   device {
