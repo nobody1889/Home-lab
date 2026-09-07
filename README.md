@@ -1,2 +1,2 @@
 # Home-lab
-my first devops and gitops big project 
+my first IAC project
