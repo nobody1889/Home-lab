@@ -116,33 +116,9 @@ build {
     execute_command = "echo '${var.ssh_password}' | {{ .Vars }} sudo -S -E bash '{{ .Path }}'"
   }
 
-  # ===== FOR INCUS & PROXMOX (QCOW2) =====
   post-processor "shell-local" {
-    inline = [
-      "mkdir -p ${var.output_dir_qcow2}",
-      "cp output-qemu/${var.image_name} ${var.output_dir_qcow2}/${var.image_name}.qcow2",
-      "ls -lh ${var.output_dir_qcow2}/"
-    ]
-    description = "Copy QCOW2 for Incus/Proxmox"
+    # to publish a version of incus instanse
+    script = "${path.cwd}/publish/to-incus.sh"
   }
 
-  # # ===== FOR ESXi (VMDK) =====
-  # post-processor "shell-local" {
-  #   inline = [
-  #     "mkdir -p ${var.output_dir_vmdk}",
-  #     "qemu-img convert -f qcow2 -O vmdk output-qemu/${var.image_name} ${var.output_dir_vmdk}/${var.image_name}.vmdk",
-  #     "ls -lh ${var.output_dir_vmdk}/"
-  #   ]
-  #   description = "Convert QCOW2 to VMDK for ESXi"
-  # }
-
-  # # ===== FOR RAW (Alternative, smaller for Incus) =====
-  # post-processor "shell-local" {
-  #   inline = [
-  #     "mkdir -p ${var.output_dir_raw}",
-  #     "qemu-img convert -f qcow2 -O raw output-qemu/${var.image_name} ${var.output_dir_raw}/${var.image_name}.raw",
-  #     "ls -lh ${var.output_dir_raw}/"
-  #   ]
-  #   description = "Convert to RAW format"
-  # }
 }
