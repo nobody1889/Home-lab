@@ -119,6 +119,10 @@ build {
   post-processor "shell-local" {
     # to publish a version of incus instanse
     script = "${path.cwd}/publish/to-incus.sh"
+    environment = [
+      "IMAGE_NAME=${var.image_name}",
+      "DEBIAN_CODENAME=${var.debian_codename}"
+    ]
   }
 
 }

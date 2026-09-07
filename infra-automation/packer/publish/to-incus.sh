@@ -3,8 +3,8 @@ set -e
 
 #cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
-IMAGE_NAME="debian-k3s-golden"
-DEBIAN_CODENAME="trixie"
+IMAGE_NAME="${IMAGE_NAME:-debian-k3s-golden}"
+DEBIAN_CODENAME="${DEBIAN_CODENAME:-trixie}"
 DISK="output-${IMAGE_NAME}/${IMAGE_NAME}"
 
 echo '=== Creating metadata ==='
