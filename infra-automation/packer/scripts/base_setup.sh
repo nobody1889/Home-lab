@@ -11,8 +11,11 @@ apt-get -y install \
   sudo openssh-server unattended-upgrades \
   incus-agent
 
-systemctl enable qemu-guest-agent
-systemctl enable ssh
-systemctl start ssh
+# Enable and start the agents
+systemctl enable --now qemu-guest-agent
+systemctl enable --now incus-agent || systemctl enable --now lxd-agent || true
+systemctl enable --now ssh
+
+systemctl daemon-reload
 
 echo "✅ base setup complete"
