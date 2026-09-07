@@ -12,7 +12,7 @@ variable "worker_ssh_public_keys" {
 
 variable "golden_image" {
   type = string
-  default = "base-as-debian-vm-2"
+  default = "debian-k3s-golden"
   description = "the golden image"
 }
 
@@ -38,7 +38,7 @@ variable "k3s_master_memory" {
 
 variable "k3s_master_storage" {
   type        = string
-  default     = "20GB"
+  default     = "25GB"
   description = "Volume for k3s master container"
   
 }
@@ -65,7 +65,7 @@ variable "k3s_worker_memory" {
 
 variable "k3s_worker_storage" {
   type        = string
-  default     = "20GB"
+  default     = "25GB"
   description = "Volume for k3s worker container"
   
 }
