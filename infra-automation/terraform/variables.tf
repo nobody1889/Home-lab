@@ -1,28 +1,19 @@
+variable "master_ssh_public_keys" {
+  description = "List of SSH public keys allowed to log in as debian"
+  type        = list(string)
+  default     = []
+}
+
+variable "worker_ssh_public_keys" {
+  description = "List of SSH public keys allowed to log in as debian"
+  type        = list(string)
+  default     = []
+}
+
 variable "golden_image" {
   type = string
   default = "base-as-debian-vm-2"
   description = "the golden image"
-}
-
-variable "gitea" {
-  type        = string
-  default     = "1"
-  description = "CPU for gitea container"
-  
-}
-
-variable "gitea_memory" {
-  type        = string
-  default     = "4GB"
-  description = "Memory for gitea container"
-  
-}
-
-variable "gitea_storage" {
-  type        = string
-  default     = "10GB"
-  description = "Volume for gitea container"
-  
 }
 
 variable "k3s_master_count" {
