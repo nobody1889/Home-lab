@@ -12,3 +12,4 @@
 *.backup
 infra-automation/packer/output-*/
 infra-automation/packer-debug.log
+infra-automation/terraform/terraform.tfvars
