@@ -1,5 +1,5 @@
 ssh_pwauth: false
-disable_root: flase
+disable_root: false
 
 users:
   - name: debian
