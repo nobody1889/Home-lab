@@ -12,8 +12,8 @@ users:
       - ${key}
 %{ endfor ~}
 
-ssh_keys:
-  authorized_keys:
+  - name: root
+    ssh_authorized_keys:
 %{ for key in ssh_keys ~}
-    - ${key}
+      - ${key}
 %{ endfor ~}
