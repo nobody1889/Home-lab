@@ -10,3 +10,5 @@
 *.log
 *.tfstate
 *.backup
+infra-automation/packer/output-*/
+infra-automation/packer-debug.log
