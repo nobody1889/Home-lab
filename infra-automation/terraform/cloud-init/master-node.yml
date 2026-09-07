@@ -1,0 +1,19 @@
+ssh_pwauth: false
+disable_root: flase
+
+users:
+  - name: debian
+    shell: /bin/bash
+    groups: [sudo, docker]
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    lock_passwd: true
+    ssh_authorized_keys:
+%{ for key in ssh_keys ~}
+      - ${key}
+%{ endfor ~}
+
+ssh_keys:
+  authorized_keys:
+%{ for key in ssh_keys ~}
+    - ${key}
+%{ endfor ~}
