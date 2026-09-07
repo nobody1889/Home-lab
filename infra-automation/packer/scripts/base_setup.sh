@@ -8,7 +8,8 @@ apt-get -y install \
   curl wget gnupg2 ca-certificates \
   apt-transport-https \
   qemu-guest-agent cloud-init cloud-guest-utils \
-  sudo openssh-server unattended-upgrades
+  sudo openssh-server unattended-upgrades \
+  incus-agent
 
 systemctl enable qemu-guest-agent
 systemctl enable ssh
