@@ -13,5 +13,6 @@ apt-get -y install \
 
 systemctl enable qemu-guest-agent
 systemctl enable ssh
+systemctl start ssh
 
 echo "✅ base setup complete"
