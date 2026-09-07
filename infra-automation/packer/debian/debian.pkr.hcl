@@ -62,7 +62,7 @@ variable "disable_components" {
 
 source "qemu" "debian" {
   iso_url      = "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-13.6.0-amd64-netinst.iso"
-  iso_checksum = "file:https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/SHA256SUMS"
+  iso_checksum = "file:https://cdimage.debian.org/debian-cd/${var.debian_version}/amd64/iso-cd/SHA256SUMS"
   vm_name = var.image_name
 
   output_directory = "output-${var.image_name}"
